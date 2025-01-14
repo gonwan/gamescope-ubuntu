@@ -18,8 +18,21 @@ Ubuntu 24.04 does not come up with gamescope. The most recent version is 3.14.24
 ```
 # cd ..
 # git clone https://github.com/gonwan/gamescope-ubuntu.git
-# cp -r gamescope-ubuntu gamescope/
+# cp -r gamescope-ubuntu/debian gamescope/
 # cd gamescope
 # QUILT_PATCHES=debian/patches quilt push -a
 # fakeroot debian/rules binary
+```
+
+### Install and run
+```
+# cd ..
+# sudo gdebi gamescope_3.14.24-1_amd64.deb
+# gamescope vkcube
+```
+
+### Steam launch options
+```
+# gamescope --mangoapp -w 1920 -h 1200 -W 2880 -H 1800 -f -F fsr -- %command%
+# eval $( echo "gamescope --mangoapp -w 1920 -h 1200 -W 2880 -H 1800 -f -F fsr -- %command%" | sed -E "s#launcher/dowser#binaries/ck3#g" )
 ```
