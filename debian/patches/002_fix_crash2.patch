@@ -1,0 +1,64 @@
+diff --git a/src/rendervulkan.hpp b/src/rendervulkan.hpp
+index dca98dd..3d0427d 100644
+--- a/src/rendervulkan.hpp
++++ b/src/rendervulkan.hpp
+@@ -471,6 +471,14 @@ struct gamescope_color_mgmt_luts
+ 		return bHasLut3D && bHasLut1D;
+ 	}
+ 
++	void shutdown()
++	{
++		bHasLut1D = false;
++		bHasLut3D = false;
++		vk_lut1d = nullptr;
++		vk_lut3d = nullptr;
++	}
++
+ 	void reset()
+ 	{
+ 		bHasLut1D = false;
+diff --git a/src/steamcompmgr.cpp b/src/steamcompmgr.cpp
+index 9ee265d..de2c21e 100644
+--- a/src/steamcompmgr.cpp
++++ b/src/steamcompmgr.cpp
+@@ -5785,7 +5785,7 @@ error(Display *dpy, XErrorEvent *ev)
+ 	return 0;
+ }
+ 
+-[[noreturn]] static void
++static void
+ steamcompmgr_exit(void)
+ {
+ 	g_ImageWaiter.Shutdown();
+@@ -5803,6 +5803,11 @@ steamcompmgr_exit(void)
+ 	g_HeldCommits[ HELD_COMMIT_BASE ] = nullptr;
+ 	g_HeldCommits[ HELD_COMMIT_FADE ] = nullptr;
+ 
++	for ( auto &lut : g_ColorMgmtLuts ) lut.shutdown();
++	for ( auto &lut : g_ColorMgmtLutsOverride ) lut.shutdown();
++	for ( auto &lut : g_ScreenshotColorMgmtLuts ) lut.shutdown();
++	for ( auto &lut : g_ScreenshotColorMgmtLutsHDR ) lut.shutdown();
++
+ 	if ( statsThreadRun == true )
+ 	{
+ 		statsThreadRun = false;
+@@ -5826,15 +5831,16 @@ steamcompmgr_exit(void)
+     wlserver_lock();
+     wlserver_shutdown();
+     wlserver_unlock(false);
+-
+-	pthread_exit(NULL);
+ }
+ 
+-static int
++[[noreturn]] static int
+ handle_io_error(Display *dpy)
+ {
+ 	xwm_log.errorf("X11 I/O error");
+ 	steamcompmgr_exit();
++
++	g_SteamCompMgrXWaylandServerMutex.unlock();
++	pthread_exit(NULL);
+ }
+ 
+ static bool

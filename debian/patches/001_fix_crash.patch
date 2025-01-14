@@ -1,0 +1,59 @@
+diff --git a/src/Backends/SDLBackend.cpp b/src/Backends/SDLBackend.cpp
+index e508789..db5b98d 100644
+--- a/src/Backends/SDLBackend.cpp
++++ b/src/Backends/SDLBackend.cpp
+@@ -54,6 +54,7 @@ namespace gamescope
+ 		GAMESCOPE_SDL_EVENT_CURSOR,
+ 
+ 		GAMESCOPE_SDL_EVENT_COUNT,
++		GAMESCOPE_SDL_EVENT_REQ_EXIT,
+ 	};
+ 
+ 	class CSDLConnector final : public IBackendConnector
+@@ -112,6 +113,7 @@ namespace gamescope
+ 	{
+ 	public:
+ 		CSDLBackend();
++		~CSDLBackend();
+ 
+ 		/////////////
+ 		// IBackend
+@@ -324,6 +326,12 @@ namespace gamescope
+ 	{
+ 	}
+ 
++	CSDLBackend::~CSDLBackend()
++	{
++		PushUserEvent(GAMESCOPE_SDL_EVENT_REQ_EXIT);
++		m_SDLThread.join();
++	}
++
+ 	bool CSDLBackend::Init()
+ 	{
+ 		m_eSDLInit.wait( SDLInitState::SDLInit_Waiting );
+@@ -904,6 +912,10 @@ namespace gamescope
+ 
+ 						SDL_SetCursor( m_pCursor );
+ 					}
++					else if ( event.type == GetUserEventIndex( GAMESCOPE_SDL_EVENT_REQ_EXIT ) )
++					{
++						return;
++					}
+ 				}
+ 				break;
+ 			}
+diff --git a/src/backend.cpp b/src/backend.cpp
+index d11fcca..0068797 100644
+--- a/src/backend.cpp
++++ b/src/backend.cpp
+@@ -27,8 +27,8 @@ namespace gamescope
+     {
+         if ( s_pBackend )
+         {
+-            delete s_pBackend;
+-            s_pBackend = nullptr;
++            // see #1335
++            std::destroy_at(s_pBackend);
+         }
+ 
+         if ( pBackend )
