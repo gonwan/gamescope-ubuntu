@@ -1,3 +1,9 @@
+gamescope (3.14.24-2) unstable; urgency=medium
+
+  * Change to compat=14 to invoke meson install instead of ninja install
+
+ -- Binhao Qian <gonwan@gmail.com>  Tue, 25 Feb 2025 18:55:20 +0800
+
 gamescope (3.14.24-1) unstable; urgency=medium
 
   * Rebase to 3.14.24 for Ubuntu 24.04

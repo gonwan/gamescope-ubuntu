@@ -3,7 +3,7 @@
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
 %:
-	dh $@ --buildsystem=meson
+	dh $@ --with=single-binary --buildsystem=meson
 
 override_dh_auto_configure:
 	dh_auto_configure -- \
@@ -12,9 +12,5 @@ override_dh_auto_configure:
 		-Denable_openvr_support=false
 
 override_dh_auto_install:
-	dh_auto_install
-	rm -rf debian/gamescope/usr/include
-	rm -rf debian/gamescope/usr/lib/x86_64-linux-gnu/libliftoff.a
-	rm -rf debian/gamescope/usr/lib/x86_64-linux-gnu/libwlroots.a
-	rm -rf debian/gamescope/usr/lib/x86_64-linux-gnu/pkgconfig
+	dh_auto_install -- --skip-subprojects
 
