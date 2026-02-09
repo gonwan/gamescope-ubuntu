@@ -14,7 +14,7 @@ Ubuntu 24.04 does not come up with gamescope. The most recent version is 3.14.24
 # git checkout 3.14.24
 # git submodule update --init
 ```
-- Apply patches and build, see [1](https://github.com/ValveSoftware/gamescope/pull/1335), [2](https://github.com/ValveSoftware/gamescope/commit/ff4536106e80f285983acb562e43233ddb4e7571) for patch details.
+- Apply patches and build, see [1](https://github.com/ValveSoftware/gamescope/pull/1335), [2](https://github.com/ValveSoftware/gamescope/commit/ff4536106e80f285983acb562e43233ddb4e7571), [3](https://github.com/ValveSoftware/gamescope/issues/1900) for patch details.
 ```
 # cd ..
 # git clone https://github.com/gonwan/gamescope-ubuntu.git
@@ -27,7 +27,7 @@ Ubuntu 24.04 does not come up with gamescope. The most recent version is 3.14.24
 ### Install and run
 ```
 # cd ..
-# sudo gdebi gamescope_3.14.24-1_amd64.deb
+# sudo gdebi gamescope_3.14.24-3_amd64.deb
 # gamescope vkcube
 ```
 
